@@ -1,12 +1,10 @@
 // ==UserScript==
 // @name         RARBG Add YouTube Trailer Link
 // @namespace    http://tampermonkey.net/
-// @version      2
-// @description  Click RARBG torrent poster and get youtube trailer
+// @version      1
+// @description  Adds youtube trailer link to RARBG (if is missing)
 // @author       https://github.com/michalani
 // @match        https://rarbgmirror.com/torrent/*
-// @downloadURL  https://raw.githubusercontent.com/michalani/rarbg-add-trailer-extension/master/main.js
-// @updateURL    https://raw.githubusercontent.com/michalani/rarbg-add-trailer-extension/master/main.js
 // @grant        none
 // ==/UserScript==
 
@@ -41,13 +39,20 @@
   
         let ytlink = "https://www.youtube.com/results?search_query=" + torrentTitle + " trailer"
   
+  
+        //create a section similar to div
+        var youtubeSection = document.createElement("tr");
+        youtubeSection.innerHTML = '<td class="header2" valign="top" align="right">Trailer</td><td class="lista"><img src="https://www.youtube.com/img/favicon.ico" height="15" width="15" border="0">&nbsp;<a href="'+ytlink+'" target="_blank" rel="nofollow noopener">'+torrentTitle+'</a></td>';
+  
         //find Torrent file
         let torrentSection = document.getElementsByTagName("tr")[23];
-        
-        //make poster clickable as a youtube link
-        var pic = (document.querySelectorAll(".lista")[7]).innerHTML;
-        pic = '<a href="'+ytlink+'" target="_blank">'+pic+'</>'
-        document.querySelectorAll(".lista")[7].innerHTML = pic;
+  
+        //insert after a HTML section new section
+        function insertAfter(referenceNode, newNode) {
+            referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+        }
+        //insert Youtube Trailer link after that section
+        insertAfter(torrentSection, youtubeSection);
   }
   
   })();
